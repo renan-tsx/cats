@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { App } from "./App.jsx";
-import { ContentTest } from "./components/ContentTest/index.jsx";
+import { ContentTest } from "./app/shared/components/ContentTest/index.jsx";
 
 const router = createBrowserRouter([
   {

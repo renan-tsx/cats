@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.17.0",
     "sort-by": "^0.0.2",
+    "styled-components": "^6.1.0",
     "vite-plugin-svgr": "^3.3.0"
   },
   "devDependencies": {

@@ -1,3 +1,5 @@
+import { Container } from "./styles";
+
 export const Header = () => {
-  return <div>Header</div>;
+  return <Container>Header</Container>;
 };

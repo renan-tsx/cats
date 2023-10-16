@@ -1,3 +1,5 @@
+import { Container } from "./styles";
+
 export const Main = ({ children }) => {
-  return <div>{children}</div>;
+  return <Container>{children}</Container>;
 };

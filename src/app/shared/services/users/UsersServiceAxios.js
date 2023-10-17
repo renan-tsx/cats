@@ -4,7 +4,7 @@ import { ApiSuccess } from "../api/ApiSuccess";
 
 const getAll = async () => {
     try {
-        const { data, status, statusText } = await Api().get("/users");
+        const { data, status, statusText } = await Api().axios.get("/users");
 
         return new ApiSuccess({
             data: data,
@@ -22,7 +22,7 @@ const getAll = async () => {
 
 const getById = async (id) => {
     try {
-        const { data, status, statusText } = await Api().get("/users/" + id);
+        const { data, status, statusText } = await Api().axios.get("/users/" + id);
         return new ApiSuccess({
             data: data,
             message: statusText,
@@ -39,7 +39,7 @@ const getById = async (id) => {
 
 const getByEmail = async (email) => {
     try {
-        const { data, status, statusText } = await Api().get("/users/?email=" + email);
+        const { data, status, statusText } = await Api().axios.get("/users/?email=" + email);
         const alreadyExists = data.length
 
         if (alreadyExists) {
@@ -77,7 +77,7 @@ const create = async (dataToCreate) => {
             });
         }
 
-        const { data, status, statusText } = await Api().post("/users", dataToCreate);
+        const { data, status, statusText } = await Api().axios.post("/users", dataToCreate);
 
         return new ApiSuccess({
             data: data,
@@ -98,7 +98,7 @@ const updateById = async (id, dataToUpdate) => {
         const { success: alreadyExists } = await getById(id);
 
         if (alreadyExists) {
-            const { data, status, statusText } = await Api().patch("/users/" + id, dataToUpdate);
+            const { data, status, statusText } = await Api().axios.patch("/users/" + id, dataToUpdate);
             return new ApiSuccess({
                 data: data,
                 message: statusText,
@@ -125,7 +125,7 @@ const deleteById = async (id) => {
         const { success: alreadyExists } = await getById(id);
 
         if (alreadyExists) {
-            const { data, status, statusText } = await Api().delete("/users/" + id);
+            const { data, status, statusText } = await Api().axios.delete("/users/" + id);
             return new ApiSuccess({
                 data: data,
                 message: statusText,
@@ -147,7 +147,7 @@ const deleteById = async (id) => {
     }
 };
 
-export const UsersService = {
+export const UsersServiceAxios = {
     getAll,
     getById,
     getByEmail,

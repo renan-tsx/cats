@@ -1,3 +1,40 @@
 {
-  "users": [{ "id": 1, "name": "renan" }]
+  "users": [
+    {
+      "id": 1,
+      "name": "João bot",
+      "last_name": "da Silva",
+      "email": "joaobot@gmail.com",
+      "password": "bot",
+      "date_created": 1697506893293,
+      "date_updated": null
+    },
+    {
+      "id": 2,
+      "name": "Pedro bot",
+      "last_name": "Aparecido da Silva",
+      "email": "pedrobot@gmail.com",
+      "password": "bot",
+      "date_created": 1697506893293,
+      "date_updated": null
+    },
+    {
+      "id": 3,
+      "name": "Maria bot",
+      "last_name": "Souza Filha",
+      "email": "mariabot@gmail.com",
+      "password": "bot",
+      "date_created": 1697506893293,
+      "date_updated": null
+    },
+    {
+      "name": "Matheus",
+      "last_name": "Lima da Silva",
+      "email": "matheus@gmail.com",
+      "password": "bot",
+      "date_created": 1697521490918,
+      "date_updated": null,
+      "id": 5
+    }
+  ]
 }

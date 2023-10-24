@@ -17,7 +17,7 @@ export const ContentTest = () => {
     });
 
     // // Teste: Buscar usuário por ID
-    // UsersService.getById("1").then((res) => {
+    // UsersService.getById(4).then((res) => {
     //   if (res instanceof ApiError) {
     //     console.log("instanceof ApiError", res.error);
     //   } else {
@@ -26,7 +26,7 @@ export const ContentTest = () => {
     // });
 
     // // Teste: Buscar usuário por ID inexistente
-    // UsersService.getById("5").then((res) => {
+    // UsersService.getById("1").then((res) => {
     //   if (res instanceof ApiError) {
     //     console.log("getById instanceof ApiError", res.error);
     //   } else {
@@ -35,7 +35,7 @@ export const ContentTest = () => {
     // });
 
     // // Teste: Buscar usuário por email
-    // UsersService.getByEmail("maria@gmail.com").then((res) => {
+    // UsersService.getByEmail("joaobot@gmail.com").then((res) => {
     //   if (res instanceof ApiError) {
     //     console.log("getByEmail instanceof ApiError", res.error);
     //   } else {
@@ -66,7 +66,9 @@ export const ContentTest = () => {
     //   if (res instanceof ApiError) {
     //     console.log("create instanceof ApiError", res.error);
     //   } else {
-    //     setUsers((prev) => [...prev, newUser]);
+    //     if (res.response.status === "success") {
+    //       setUsers((prev) => [...prev, newUser]);
+    //     }
     //     console.log("create res", res.response);
     //   }
     // });
@@ -78,7 +80,7 @@ export const ContentTest = () => {
     //   date_updated: new Date().getTime(),
     // };
 
-    // // Teste: Atualizar um usuário existente
+    // Teste: Atualizar um usuário existente
     // UsersService.updateById(4, updateUser).then((res) => {
     //   if (res instanceof ApiError) {
     //     console.log("updateById instanceof ApiError", res.error);
@@ -101,6 +103,12 @@ export const ContentTest = () => {
     //   if (res instanceof ApiError) {
     //     console.log("deleteById instanceof ApiError", res.error);
     //   } else {
+    //     if (res.response.status === "success") {
+    //       setUsers((prev) => {
+    //         const newUsers = prev.filter((user) => user.id !== 4);
+    //         return newUsers;
+    //       });
+    //     }
     //     console.log("deleteById res", res.response);
     //   }
     // });

@@ -7,21 +7,20 @@ const getAll = async () => {
         const response = await fetch(`${Api().baseURL}/users`);
         const data = await response.json();
 
-        if (response.status >= 400) {
-            throw new ApiError({
-                origin: "getAll",
-                message: "Erro ao consultar os usuários",
-                status: response.status,
+        if (response.ok) {
+            return new ApiSuccess({
+                message: "Usuários carregados com sucesso",
+                data
             });
         }
 
-        return new ApiSuccess({
-            data: data,
-            message: response.statusText,
-            status: response.status,
-        });
+        throw Error();
+
     } catch (error) {
-        return error;
+        return new ApiError({
+            message: "Erro ao buscar os usuários",
+            origin: getAll.name,
+        });
     }
 };
 
@@ -30,21 +29,20 @@ const getById = async (id) => {
         const response = await fetch(`${Api().baseURL}/users/${id}`);
         const data = await response.json();
 
-        if (response.status >= 400) {
-            throw new ApiError({
-                origin: "getById",
-                message: "Erro ao consultar o usuário",
-                status: response.status,
+        if (response.ok && data.id) {
+            return new ApiSuccess({
+                message: "Usuário carregado com sucesso",
+                data: [data],
             });
         }
 
-        return new ApiSuccess({
-            data: data,
-            message: response.statusText,
-            status: response.status,
-        });
+        throw Error();
+
     } catch (error) {
-        return error;
+        return new ApiError({
+            message: "Erro ao buscar o usuário",
+            origin: getById.name,
+        });
     }
 };
 
@@ -53,143 +51,127 @@ const getByEmail = async (email) => {
         const response = await fetch(`${Api().baseURL}/users/?email=${email}`);
         const data = await response.json();
 
-        if (response.status === 404) {
-            return new ApiError({
-                origin: "getByEmail",
-                message: "O usuário não existe",
-                status: 404,
-            });
-        } else if (response.status >= 400) {
-            throw new ApiError({
-                origin: "getByEmail",
-                message: "Erro ao consultar o usuário",
-                status: response.status,
+        if (response.ok && data.length) {
+            return new ApiSuccess({
+                message: "Usuário carregado com sucesso",
+                data,
             });
         }
 
-        return new ApiSuccess({
-            data: data,
-            message: response.statusText,
-            status: response.status,
-        });
+        throw Error();
+
     } catch (error) {
-        return error;
+        return new ApiError({
+            message: "Erro ao buscar o usuário",
+            origin: getByEmail.name,
+        });
     }
 };
 
 const create = async (dataToCreate) => {
+
     try {
-        const emailCheck = await getByEmail(dataToCreate.email);
+        const { status } = await getByEmail(dataToCreate.email);
 
-        if (emailCheck instanceof ApiError && emailCheck.status === 404) {
-            const response = await fetch(`${Api().baseURL}/users`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(dataToCreate),
-            });
-
-            const data = await response.json();
-
-            if (response.status >= 400) {
-                throw new ApiError({
-                    origin: "create",
-                    message: "Erro ao criar o usuário",
-                    status: response.status,
-                });
-            }
-
-            return new ApiSuccess({
-                data: data,
-                message: response.statusText,
-                status: response.status,
-            });
-        } else {
+        if (status === "success") {
             return new ApiError({
-                origin: "create",
                 message: "O usuário já existe",
-                status: 409,
+                origin: create.name,
             });
         }
+
+        const response = await fetch(`${Api().baseURL}/users`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", },
+            body: JSON.stringify(dataToCreate),
+        });
+
+        if (response.status === 201) {
+            const data = await response.json();
+
+            return new ApiSuccess({
+                message: "Usuário criado com sucesso",
+                data: [data]
+            });
+        }
+
+        throw Error;
+
     } catch (error) {
-        return error;
+        return new ApiError({
+            message: "Erro ao criar o usuário",
+            origin: create.name,
+        });
     }
+
 };
 
 const updateById = async (id, dataToUpdate) => {
     try {
-        const idCheck = await getById(id);
+        const { status } = await getById(id);
 
-        if (!(idCheck instanceof ApiError)) {
+        if (status === "success") {
             const response = await fetch(`${Api().baseURL}/users/${id}`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json", },
                 body: JSON.stringify(dataToUpdate),
             });
 
-            const data = await response.json();
+            if (response.ok) {
+                const data = await response.json();
 
-            if (response.status >= 400) {
-                throw new ApiError({
-                    origin: "updateById",
-                    message: "Erro ao atualizar o usuário",
-                    status: response.status,
+                return new ApiSuccess({
+                    message: "Usuário atualizado com sucesso",
+                    data: [data]
                 });
             }
 
-            return new ApiSuccess({
-                data: data,
-                message: response.statusText,
-                status: response.status,
-            });
-        } else {
-            return new ApiError({
-                origin: "updateById",
-                message: "O usuário não existe",
-                status: 404,
-            });
+            throw Error;
         }
+
+        return new ApiError({
+            message: "O usuário não existe",
+            origin: updateById.name,
+        });
+
     } catch (error) {
-        return error;
+        return new ApiError({
+            message: "Erro ao atualizar o usuário",
+            origin: updateById.name,
+        });
     }
 };
 
+
 const deleteById = async (id) => {
     try {
-        const idCheck = await getById(id);
+        const { status, data } = await getById(id);
 
-        if (!(idCheck instanceof ApiError)) {
+        if (status === "success") {
             const response = await fetch(`${Api().baseURL}/users/${id}`, {
                 method: "DELETE",
             });
 
-            const data = await response.json();
-
-            if (response.status >= 400) {
-                throw new ApiError({
-                    origin: "deleteById",
-                    message: "Erro ao deletar o usuário",
-                    status: response.status,
+            if (response.ok) {
+                return new ApiSuccess({
+                    message: "Usuário excluído com sucesso",
+                    data
                 });
             }
 
-            return new ApiSuccess({
-                data: data,
-                message: response.statusText,
-                status: response.status,
-            });
-        } else {
-            return new ApiError({
-                origin: "deleteById",
-                message: "O usuário não existe",
-                status: 404,
-            });
+            throw Error;
         }
+
+        return new ApiError({
+            message: "O usuário não existe",
+            origin: deleteById.name,
+        });
+
     } catch (error) {
-        return error;
+        return new ApiError({
+            message: "Erro ao atualizar o usuário",
+            origin: updateById.name,
+        });
     }
 };
 

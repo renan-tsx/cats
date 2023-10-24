@@ -1,5 +1,5 @@
-import { UsersServiceAxios } from "./UsersServiceAxios";
+import { UsersServiceFetch } from "./UsersServiceFetch";
 
 export const UsersService = {
-    ...UsersServiceAxios
+    ...UsersServiceFetch
 };

@@ -4,145 +4,132 @@ import { ApiSuccess } from "../api/ApiSuccess";
 
 const getAll = async () => {
     try {
-        const { data, status, statusText } = await Api().axios.get("/users");
+        const { data } = await Api().axios.get("/users");
 
         return new ApiSuccess({
+            message: "Usuários carregados com sucesso",
             data: data,
-            message: statusText,
-            status: status
         });
     } catch (error) {
         return new ApiError({
-            origin: "getAll",
-            message: "Erro ao consultar os usuários",
-            status: error.response.status,
+            message: "Erro ao buscar os usuários",
+            origin: getAll.name,
         });
     }
 };
 
 const getById = async (id) => {
     try {
-        const { data, status, statusText } = await Api().axios.get("/users/" + id);
+        const { data } = await Api().axios.get(`/users/${id}`);
+
         return new ApiSuccess({
-            data: data,
-            message: statusText,
-            status: status
+            message: "Usuário carregado com sucesso",
+            data: [data],
         });
     } catch (error) {
         return new ApiError({
-            origin: "getById",
-            message: "Erro ao consultar o usuário",
-            status: error.response.status,
+            message: "Erro ao buscar o usuário",
+            origin: getById.name,
         });
     }
 };
 
 const getByEmail = async (email) => {
     try {
-        const { data, status, statusText } = await Api().axios.get("/users/?email=" + email);
-        const alreadyExists = data.length
+        const { data } = await Api().axios.get("/users/?email=" + email);
+        const alreadyExists = data.length;
 
         if (alreadyExists) {
             return new ApiSuccess({
+                message: "Usuário carregado com sucesso",
                 data: data,
-                message: statusText,
-                status: status
             });
         }
 
-        return new ApiError({
-            origin: "getByEmail",
-            message: "O usuário não existe",
-            status: 404,
+        return new ApiSuccess({
+            message: "Usuário não existe",
+            data: data,
         });
 
     } catch (error) {
         return new ApiError({
-            origin: "getByEmail",
             message: "Erro ao consultar o usuário",
-            status: error.response.status,
+            origin: getByEmail.name,
         });
     }
 };
 
 const create = async (dataToCreate) => {
     try {
-        const { status: statusUser } = await getByEmail(dataToCreate.email);
+        const { status } = await getByEmail(dataToCreate.email);
 
-        if (statusUser !== 404) {
+        if (status === "success") {
             return new ApiError({
-                origin: "create",
                 message: "O usuário já existe",
-                status: 409,
+                origin: create.name,
             });
         }
 
-        const { data, status, statusText } = await Api().axios.post("/users", dataToCreate);
+        const { data } = await Api().axios.post("/users", dataToCreate);
 
         return new ApiSuccess({
+            message: "Usuário criado com sucesso",
             data: data,
-            message: statusText,
-            status: status
         });
     } catch (error) {
         return new ApiError({
-            origin: "create",
             message: "Erro ao criar o usuário",
-            status: error.response.status,
+            origin: create.name,
         });
     }
 };
 
 const updateById = async (id, dataToUpdate) => {
     try {
-        const { success: alreadyExists } = await getById(id);
+        const { status } = await getById(id);
 
-        if (alreadyExists) {
-            const { data, status, statusText } = await Api().axios.patch("/users/" + id, dataToUpdate);
-            return new ApiSuccess({
-                data: data,
-                message: statusText,
-                status: status
+        if (status === "error") {
+            return new ApiError({
+                message: "O usuário não existe",
+                origin: updateById.name
             });
         }
 
-        return new ApiError({
-            origin: "updateById",
-            message: "O usuário não existe",
-            status: 404,
+        const { data } = await Api().axios.patch("/users/" + id, dataToUpdate);
+
+        return new ApiSuccess({
+            message: "Usuário atualizado com sucesso",
+            data: [data],
         });
     } catch (error) {
         return new ApiError({
-            origin: "updateById",
             message: "Erro ao atualizar o usuário",
-            status: error.response.status,
+            origin: updateById.name,
         });
     }
 };
 
 const deleteById = async (id) => {
     try {
-        const { success: alreadyExists } = await getById(id);
+        const { status } = await getById(id);
 
-        if (alreadyExists) {
-            const { data, status, statusText } = await Api().axios.delete("/users/" + id);
+        if (status === "success") {
+            const { data } = await Api().axios.delete("/users/" + id);
+
             return new ApiSuccess({
-                data: data,
-                message: statusText,
-                status: status
+                message: "Usuário excluído com sucesso",
+                data: [data],
             });
         }
 
         return new ApiError({
-            origin: "deleteById",
             message: "O usuário não existe",
-            status: 404,
+            origin: deleteById.name,
         });
     } catch (error) {
         return new ApiError({
-            origin: "deleteById",
             message: "Erro ao deletar o usuário",
-            status: error.response.status,
+            origin: deleteById.name,
         });
     }
 };

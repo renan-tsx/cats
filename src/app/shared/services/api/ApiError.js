@@ -1,18 +1,23 @@
 export class ApiError extends Error {
-    constructor({ message = null, status = null, origin = "" }) {
-        // Chama o construtor da classe Error, definindo a mensagem de erro.
+    constructor({ message = null, origin = "" }) {
+        origin = "ApiError" + (origin ? " <- " : "") + origin;
+        const timestamp = new Date().getTime();
+
+        // Mensagem padrão para classe Error
         super(message);
 
         // Define as propriedades de erro separadamente.
-        this.origin = "ApiError" + (origin ? " - " : "") + origin;
-        this.message = message
-        this.status = status;
+        this.status = "error";
+        this.message = message;
+        this.origin = origin;
+        this.timestamp = timestamp;
 
         // Define o erro como um objeto com informações.
         this.error = {
-            origin: "ApiError" + (origin ? " - " : "") + origin,
+            status: "error",
             message: message,
-            status: status
+            origin,
+            timestamp
         };
     }
 }

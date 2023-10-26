@@ -1,5 +1,12 @@
 export class ApiError extends Error {
-    constructor({ message = null, origin = "" }) {
+    constructor({
+        message = null,
+        ok = false,
+        httpCode = null,
+        httpText = null,
+        origin = "",
+    }) {
+
         origin = "ApiError" + (origin ? " <- " : "") + origin;
         const timestamp = new Date().getTime();
 
@@ -7,15 +14,19 @@ export class ApiError extends Error {
         super(message);
 
         // Define as propriedades de erro separadamente.
-        this.status = "error";
         this.message = message;
+        this.ok = ok;
+        this.httpCode = httpCode;
+        this.httpText = httpText;
         this.origin = origin;
         this.timestamp = timestamp;
 
         // Define o erro como um objeto com informações.
         this.error = {
-            status: "error",
-            message: message,
+            message,
+            ok,
+            httpCode,
+            httpText,
             origin,
             timestamp
         };
